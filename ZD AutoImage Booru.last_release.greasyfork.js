@@ -6,7 +6,7 @@
 // @author        ZeroDrako
 // @updateURL     https://raw.githubusercontent.com/ZeroDrako/AutoImage-Boorus/master/AutoImage%20Booru.last_release.greasyfork.js
 // @downloadURL   https://raw.githubusercontent.com/ZeroDrako/AutoImage-Boorus/master/AutoImage%20Booru.last_release.greasyfork.js
-// @license       GPLv3; https://raw.githubusercontent.com/ZeroDrako/ZD-AutoImage-Boorus/master/LICENSE
+// @license       GPLv3; https://raw.githubusercontent.com/ZeroDrako/AutoImage-Boorus/master/LICENSE
 // @include       http://danbooru.donmai.us/*
 // @include       http://gelbooru.com/index.php*
 // @include       http://safebooru.org/index.php*
