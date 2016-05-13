@@ -1,6 +1,6 @@
-# [AutoImage Boorus](https://github.com/ZeroDrako/ZD-AutoImage-Boorus)
+# [AutoImage Boorus](https://github.com/ZeroDrako/AutoImage-Boorus)
 UserScript written in JavaScript for Chrome/Firefox/Opera & Tampermonkey/Greasemonkey, that make more easy download images from Danbooru, Gelbooru, Safebooru, Sankakucomplex, Yande.re, Rule34.xxx, Furry.booru.
-![MENU](https://raw.githubusercontent.com/ZeroDrako/ZD-AutoImage-Boorus/master/YandeRe%20-%20Sankaku.png)
+![MENU](https://raw.githubusercontent.com/ZeroDrako/AutoImage-Boorus/master/YandeRe%20-%20Sankaku.png)
 
 ### Why?
 To simplify download images, and keep a track of images downloaded.
