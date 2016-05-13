@@ -2,10 +2,10 @@
 // @name          ZD AutoImage Boorus
 // @namespace     https://github.com/ZeroDrako/ZD-AutoImage-Boorus
 // @version       1.0
-// @description   Add function OneClick-To-Downnload Images from Danbooru, Gelbooru, Safebooru, Sankakucomplex, Yande.re, Rule34.xxx, Furry.booru
+// @description   Add function OneClick-To-Downnload Images from Danbooru, Gelbooru, Safebooru, Sankakucomplex, Yande.re, Rule34, Furry.booru
 // @author        ZeroDrako
-// @updateURL     https://raw.githubusercontent.com/ZeroDrako/AutoImage-Boorus/master/AutoImage%20Booru.last_release.greasyfork.js
-// @downloadURL   https://raw.githubusercontent.com/ZeroDrako/AutoImage-Boorus/master/AutoImage%20Booru.last_release.greasyfork.js
+// @updateURL     https://raw.githubusercontent.com/ZeroDrako/AutoImage-Boorus/master/ZD%20AutoImage%20Booru.last_release.greasyfork.js
+// @downloadURL   https://raw.githubusercontent.com/ZeroDrako/AutoImage-Boorus/master/ZD%20AutoImage%20Booru.last_release.greasyfork.js
 // @license       GPLv3; https://raw.githubusercontent.com/ZeroDrako/AutoImage-Boorus/master/LICENSE
 // @include       http://danbooru.donmai.us/*
 // @include       http://gelbooru.com/index.php*
