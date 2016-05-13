@@ -1,0 +1,27 @@
+.ZDOptionTitle {
+    font-size: 12px;
+    font-weight: bold;
+    padding-bottom: 1%;
+}
+
+#ZDdirselect {
+    display: none;
+}
+
+#ZDtitle {
+    padding-top: 20px;
+}
+
+.ZDOptionDown {
+    font-weight: 400;
+    float: right!important;
+    margin-right: 12%;
+    font-size: 11px;
+    border: 1px solid #EAEAEA;
+}
+
+#ZDdirectory {
+    color: #666;
+    border: 1px solid #202529;
+    background: #000;
+}

@@ -1,0 +1,43 @@
+.ZDOptionTitle {
+    color: #006FFA!important;
+    font-size: 12px;
+    font-weight: bold;
+    padding-bottom: 1%;
+    list-style-type: none;
+}
+
+#ZDdirselect {
+    display: none;
+}
+
+#ZDtitle {
+    color: black;
+    padding-top: 20px;
+    font-size: 13px !important;
+    padding-bottom: 10px;
+}
+
+.ZDOptionDown {
+    float: right!important;
+    margin-right: 12%;
+    font-size: 11px;
+    font-weight: 400;
+    color: black;
+    border: 1px solid #EAEAEA;
+    background: white;
+}
+
+.ZDOptionDown:hover{ 
+    background: #D9E6F7;
+}
+
+#ZDdirectory {
+    color: #666;
+    border: 1px solid #202529;
+    background: #000;
+}
+
+/* Fix View Page */
+article.post-preview {
+        height: 170px !important;
+}

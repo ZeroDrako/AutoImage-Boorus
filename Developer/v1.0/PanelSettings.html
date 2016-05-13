@@ -1,0 +1,41 @@
+<div id="ZDtitle">
+    <h5>ZD AutoImage Booru v1</h5>
+</div>
+<div class="wrap">
+    <form id="translateForm">
+        <div>
+            <li class="ZDOptionTitle">Down One?
+                <select id="ZDdownone" class="ZDOptionDown">
+                    <option value=false>No</option>
+                    <option value=true>Yes</option>
+                </select>
+            </li>
+            <li class="ZDOptionTitle">Down Orig?
+                <select id="ZDdownorig" class="ZDOptionDown">
+                    <option value=false>No</option>
+                    <option value=true>Yes</option>
+                </select>
+            </li>
+            <li class="ZDOptionTitle">Add News?
+                <select id="ZDaddnews" class="ZDOptionDown">
+                    <option value=false>No</option>
+                    <option value=true>Yes</option>
+                </select>
+            </li>
+            <li class="ZDOptionTitle">Alert Dial?
+                <select id="ZDalertdialog" class="ZDOptionDown">
+                    <option value=false>No</option>
+                    <option value=true>Yes</option>
+                </select>
+            </li>
+            <li class="ZDOptionTitle">Files: 
+                <h7 id="ZDnumfiles"></h7>
+                <input id="ZDdirselect" type=file multiple webkitdirectory directory>
+                <input type="button" id="ZDdirhelp" class="ZDOptionDown" value="Browse..."
+                        onclick="document.getElementById('ZDdirselect').click()"> 
+            </li>
+            </h5>
+        </div>
+        <p id="ZDsaved" class="ZDoption">&nbsp;</p>
+    </form>
+</div>

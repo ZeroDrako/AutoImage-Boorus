@@ -1,0 +1,25 @@
+.ZDOptionTitle {
+    color: #0073ff!important;
+    list-style-type: none;
+}
+
+#ZDtitle {
+    color: #0073ff;
+    font-size: 14px;
+}
+
+.ZDOptionDown {
+    color: black;
+    border: 1px solid #EAEAEA;
+    background: white;
+}
+
+.ZDOptionDown:hover{ 
+    background: #F7F7FF;
+    color: black;
+}
+
+/* Fix View Page */
+article.post-preview {
+        height: 170px !important;
+}

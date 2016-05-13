@@ -1,0 +1,22 @@
+.ZDOptionTitle {
+    color: #ee8887!important;
+}
+
+#ZDtitle {
+    font-size: 14px;
+}
+
+.ZDOptionDown {
+    color: #ffbbbb;
+    background: #222;
+}
+
+.ZDOptionDown:hover{ 
+    background: #ee8887;
+    color: white;
+}
+
+/* Fix View Page */
+a.directlink{
+    margin-top: 5px !important;
+}

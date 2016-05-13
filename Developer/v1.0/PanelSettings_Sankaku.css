@@ -1,0 +1,46 @@
+.ZDOptionTitle {
+    color: #FF761C!important;
+    font-size: 12px;
+    font-weight: bold;
+    padding-bottom: 1%;
+}
+
+#ZDdirselect {
+    display: none;
+}
+
+#ZDdirhelp {
+    margin-right: 10% !important;
+    padding: 1% !important;
+}
+
+#ZDtitle {
+    padding-top: 20px;
+    font-size: 13px;
+}
+
+.ZDOptionDown {
+    float: right!important;
+    margin-right: 12%;
+    font-size: 11px;
+    font-weight: 400 !important;
+    color: black;
+    border: 1px solid #DDDDDD !important;
+    background: #FAFAFA;
+}
+
+.ZDOptionDown:hover{ 
+    background: #FF761C !important;
+    color: white !important;
+}
+
+#ZDdirectory {
+    color: #666;
+    border: 1px solid #202529;
+    background: #000;
+}
+
+/* Fix View Page */
+div.content {
+    padding-left: 250px !important;
+}
