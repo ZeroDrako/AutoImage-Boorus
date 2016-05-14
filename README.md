@@ -32,6 +32,7 @@ Add some option in the page, you can see in the panel option named "ZD AutoImage
   - This option also could be used as a record of downloads, but remenber set this "Yes" and not change "Files" value.
 
 5. **Files**
+  - __*Important*__, see note __File Access__ to use this function
   - This option show a pop-up where you can choose a directory where you store you images. If the script detects that the image you're to download is already downloaded skipt the image or show you an alert about it. Check "Alert Dial?" option.
   - Because security reasons, you need re-select this option for add fore images to the list. See "Add News" option.
     - **Note 1:** *Your images need to have the original name.*
@@ -39,6 +40,9 @@ Add some option in the page, you can see in the panel option named "ZD AutoImage
     - **Note 3 - Firefox:** *Because mozilla has not implemented 'select folder', you need to select all images, if you have much subfolders you can enter* \*.\* *in the search bar of the window explorer, this will load all the files and you can select all, remember wait until all files are loaded.*
 
 ## Notes
+0. **File Access**: By default, Greasemonkey/Tampermonkey don't run scripts whit __file:///__ urls, that means that don't let the script have acces to files store in your PC, So, you need to enable it first.
+  - For Greasemonkey, open __about:config__ and change __greasemonkey.fileIsGreaseable__ to true
+  - For Tampermonkey, go to Chrome extension page, and tick the __Allow access to file URLs__ checkbox at the Tampermonkey extension section.
 1. **GM_xmlhttpRequest** : Because some sites store images in a external server.
 3. **ZD AutoImage Boorus.greasyfork.js** : This version contains the __FileSaver.js__ lib  inside the code because __Greasyfork__ don't let import code from original reps on github, and the versions on __cdnjs__ is outdated code
 
