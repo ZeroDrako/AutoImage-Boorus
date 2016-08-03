@@ -56,3 +56,5 @@ Add some option in the page, you can see in the panel option named "ZD AutoImage
 **(Last 2 Releses, full changelog in __changelog.txt__ file)**
 - v1.0
   - Initial release
+- v1.1
+  - Solved bug that break code in new versions of TM/GM
