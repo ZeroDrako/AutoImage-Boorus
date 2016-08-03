@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          ZD AutoImage Boorus
 // @namespace     https://github.com/ZeroDrako/ZD-AutoImage-Boorus
-// @version       1.0
+// @version       1.1
 // @description   Add function OneClick-To-Downnload Images from Danbooru, Gelbooru, Safebooru, Sankakucomplex, Yande.re, Rule34.xxx, Furry.booru
 // @author        ZeroDrako
 // @updateURL     https://raw.githubusercontent.com/ZeroDrako/AutoImage-Boorus/master/ZD%20AutoImage%20Booru.last_release.js
@@ -82,7 +82,7 @@ function loadPreferences() {
 function addSettingPanel() {
     var settingPanel = document.createElement('div');
     settingPanel.id = 'ZDpopup';
-    settingPanel.innerHTML = '<divid="ZDtitle"><h5>ZDAutoImageBooruv1</h5></div><divclass="wrap"><formid="translateForm"><div><liclass="ZDOptionTitle">DownOne?<selectid="ZDdownone"class="ZDOptionDown"><optionvalue=false>No</option><optionvalue=true>Yes</option></select></li><liclass="ZDOptionTitle">DownOrig?<selectid="ZDdownorig"class="ZDOptionDown"><optionvalue=false>No</option><optionvalue=true>Yes</option></select></li><liclass="ZDOptionTitle">AddNews?<selectid="ZDaddnews"class="ZDOptionDown"><optionvalue=false>No</option><optionvalue=true>Yes</option></select></li><liclass="ZDOptionTitle">AlertDial?<selectid="ZDalertdialog"class="ZDOptionDown"><optionvalue=false>No</option><optionvalue=true>Yes</option></select></li><liclass="ZDOptionTitle">Files:<h7id="ZDnumfiles"></h7><inputid="ZDdirselect"type=filemultiplewebkitdirectorydirectory><inputtype="button"id="ZDdirhelp"class="ZDOptionDown"value="Browse..."onclick="document.getElementById(\'ZDdirselect\').click()"></li></h5></div><pid="ZDsaved"class="ZDoption">&nbsp;</p></form></div>';
+    settingPanel.innerHTML = '<div id=ZDtitle><h5>ZD AutoImage Booru v1</h5></div><div class=wrap><form id=translateForm><div><li class=ZDOptionTitle>Down One?<select class=ZDOptionDown id=ZDdownone><option value=false>No<option value=true>Yes</select><li class=ZDOptionTitle>Down Orig?<select class=ZDOptionDown id=ZDdownorig><option value=false>No<option value=true>Yes</select><li class=ZDOptionTitle>Add News?<select class=ZDOptionDown id=ZDaddnews><option value=false>No<option value=true>Yes</select><li class=ZDOptionTitle>Alert Dial?<select class=ZDOptionDown id=ZDalertdialog><option value=false>No<option value=true>Yes</select><li class=ZDOptionTitle>Files:<h7 id=ZDnumfiles></h7><input id=ZDdirselect type=file directory multiple webkitdirectory> <input id=ZDdirhelp type=button class=ZDOptionDown onclick=\'document.getElementById("ZDdirselect").click()\'value=Browse...></div><p class=ZDoption id=ZDsaved></form></div>';
     var query = '';
     if (yandere || sankaku) {
         query = 'div.sidebar > div';
