@@ -106,138 +106,133 @@ var ehDownloadStyle = '\
 ';
 
 
-var ehDownloadBox = document.createElement('fieldset');
-ehDownloadBox.className = 'ehD-box';
-var ehDownloadBoxTitle = document.createElement('legend');
-ehDownloadBoxTitle.innerHTML = 'E-Hentai Downloader <span class="ehD-box-limit"></span> <span class="ehD-box-cost"></span>';
-if (origin.indexOf('exhentai.org') >= 0) ehDownloadBoxTitle.style.color = '#ffff66';
-ehDownloadBox.appendChild(ehDownloadBoxTitle);
-var ehDownloadStylesheet = document.createElement('style');
-ehDownloadStylesheet.textContent = ehDownloadStyle;
-ehDownloadBox.appendChild(ehDownloadStylesheet);
-
-var ehDownloadArrow = '<img src="data:image/gif;base64,R0lGODlhBQAHALMAAK6vr7OztK+urra2tkJCQsDAwEZGRrKyskdHR0FBQUhISP///wAAAAAAAAAAAAAAACH5BAEAAAsALAAAAAAFAAcAAAQUUI1FlREVpbOUSkTgbZ0CUEhBLREAOw==">';
-
-var ehDownloadAction = document.createElement('div');
-ehDownloadAction.className = 'g2';
-ehDownloadAction.innerHTML = ehDownloadArrow + ' <a>Download Archive</a>';
-ehDownloadAction.addEventListener('click', function(event) {
-    event.preventDefault();
-
-    var torrentsNode = document.querySelector('#gd5 a[onclick*="gallerytorrents.php"]');
-    var torrentsCount = torrentsNode ? torrentsNode.textContent.match(/\d+/)[0] - 0 : 0;
-    if (isDownloading && !confirm('E-Hentai Downloader is working now, are you sure to stop downloading and start a new download?')) return;
-    else if (!setting['ignore-torrent'] && torrentsCount > 0 && !confirm('There are ' + torrentsCount + ' torrent(s) available for this gallery. You can download the torrent(s) to get a stable and controllable download experience without spending your image limits, or even get bonus content.\n\nContinue downloading with E-Hentai Downloader (Yes) or use torrent(s) directly (No)?\n(You can disable this notification in the Settings)')) {
-        return torrentsNode.dispatchEvent(new MouseEvent('click'));
-    }
-    if (unsafeWindow.apiuid === -1 && !confirm('You are not logged in to E-Hentai Forums, so you can\'t download original image. Continue?')) return;
-    ehDownloadDialog.innerHTML = '';
-
-    initEHDownload();
-});
-ehDownloadBox.appendChild(ehDownloadAction);
-
-var ehDownloadNumberInput = document.createElement('div');
-ehDownloadNumberInput.className = 'g2';
-ehDownloadNumberInput.innerHTML = ehDownloadArrow + ' <a><label><input type="checkbox" style="vertical-align: middle; margin: 0;"> Number Images</label></a>';
-ehDownloadBox.appendChild(ehDownloadNumberInput);
-
-var ehDownloadRange = document.createElement('div');
-ehDownloadRange.className = 'g2';
-ehDownloadRange.innerHTML = ehDownloadArrow + ' <a><label>Pages Range <input type="text" placeholder="eg. -10,12,14-20,27,30-40/2,50-60/3,70-"></label></a>';
-ehDownloadBox.appendChild(ehDownloadRange);
-
-var ehDownloadSetting = document.createElement('div');
-ehDownloadSetting.className = 'g2';
-ehDownloadSetting.innerHTML = ehDownloadArrow + ' <a>Settings</a>';
-ehDownloadSetting.addEventListener('click', function(event) {
-    event.preventDefault();
-    showSettings();
-});
-ehDownloadBox.appendChild(ehDownloadSetting);
-
-document.body.insertBefore(ehDownloadBox, document.getElementById('asm') || document.querySelector('.gm').nextElementSibling);
-
-var ehDownloadDialog = document.createElement('div');
-ehDownloadDialog.className = 'ehD-dialog';
-document.body.appendChild(ehDownloadDialog);
-
-var ehDownloadStatus = document.createElement('div');
-ehDownloadStatus.className = 'ehD-status';
-ehDownloadStatus.addEventListener('click', function(event) {
-    event.preventDefault();
-    ehDownloadDialog.classList.toggle('hidden');
-});
-
-var ehDownloadPauseBtn = document.createElement('button');
-ehDownloadPauseBtn.className = 'ehD-pause';
-ehDownloadPauseBtn.textContent = 'Pause';
-ehDownloadPauseBtn.addEventListener('click', function(event) {
-    if (!isPausing) {
-        isPausing = true;
-        ehDownloadPauseBtn.textContent = 'Resume';
-
-        if (setting['force-pause']) {
-            // waiting Tampermonkey for transfering string to ArrayBuffer, it may stuck for a second 
-            setTimeout(function() {
-                for (var i = 0; i < fetchThread.length; i++) {
-                    if (typeof fetchThread[i] !== 'undefined' && 'abort' in fetchThread[i]) fetchThread[i].abort();
-
-                    if (imageData[i] === 'Fetching' && retryCount[i] < (setting['retry-count'] !== undefined ? setting['retry-count'] : 3)) {
-                        var elem = progressTable.querySelector('tr[data-index="' + i + '"] .ehD-pt-status-text');
-                        if (elem) elem.textContent = 'Force Paused';
-
-                        elem = progressTable.querySelector('tr[data-index="' + i + '"] .ehD-pt-progress-text');
-                        if (elem) elem.textContent = '';
-
-                        imageData[i] = null;
-                        //fetchCount = 0; // fixed for async
-                        fetchCount--;
-
-                        updateTotalStatus();
-                    }
-                }
-            }, 0);
-        }
-
-        if (emptyAudio) {
-            emptyAudio.pause();
-        }
-    } else {
-        isPausing = false;
-        ehDownloadPauseBtn.textContent = setting['force-pause'] ? 'Pause (Downloading images will be aborted)' : 'Pause (Downloading images will keep downloading)';
-
-        checkFailed();
-    }
-});
-
-window.addEventListener('focus', function() {
-    if (setting['status-in-title'] === 'blur') {
-        if (!needTitleStatus) return;
-        document.title = pretitle;
-        needTitleStatus = false;
-    }
-});
-
-window.addEventListener('blur', function() {
-    if (isDownloading && setting['status-in-title'] === 'blur') {
-        needTitleStatus = true;
-        document.title = '[' + (isPausing ? '❙❙' : downloadedCount < totalCount ? '↓ ' + downloadedCount + '/' + totalCount : totalCount === 0 ? '↓' : '√') + '] ' + pretitle;
-    }
-});
-
-var forceDownloadTips = document.createElement('div');
-forceDownloadTips.className = 'ehD-force-download-tips';
-forceDownloadTips.innerHTML = 'If an error occured and script doesn\'t work, click <a href="javascript: getzip();" style="font-weight: bold; pointer-events: auto;" title="Force download won\'t stop current downloading task.">here</a> to force get your downloaded images.';
-forceDownloadTips.getElementsByTagName('a')[0].addEventListener('click', function(event) {
-    // fixed permission denied on GreaseMonkey
-    event.preventDefault();
-    saveDownloaded(true);
-});
-
-var closeTips = document.createElement('div');
-closeTips.className = 'ehD-close-tips';
-closeTips.innerHTML = 'E-Hentai Downloader is still running, please don\'t close this tab until it finished downloading.<br><br>If any bug occured and the script doesn\'t work correctly, you can move your mouse pointer onto the progress box, and force to save downloaded images before you leave.';
+var htmlNode = document.createElement('div');
+htmlNode.innerHTML = `<div class="ehD-dialog" style="display: block;"><span>FGO Mash kiyu
+mero<br><br>https://exhentai.org/g/1797132/1307c5c9be/<br>
+5<br><br></span><span>Start downloading at Fri Dec 11 2020 18:06:28 GMT-0600 (hora estándar central)<br></span>
+<div class="ehD-status">Total: 17 | Downloading: 4 | Succeed: 0 | Failed: 11</div><span><br>Fetching Gallery Pages
+URL (1/1) ... </span><span>Succeed!</span><span><br><br></span>
+<table class="ehD-pt">
+<tr class="ehD-pt-item ehD-pt-failed" data-index="0">
+    <td class="ehD-pt-name">#1: _2.jpg</td>
+    <td class="ehD-pt-progress-outer"> <progress class="ehD-pt-progress" value="0"></progress> <span
+            class="ehD-pt-progress-text"></span> </td>
+    <td class="ehD-pt-status" data-inited-abort="2"> <span class="ehD-pt-status-text">Failed! (Network
+            Error)</span> <span class="ehD-pt-abort">Force Abort</span> </td>
+</tr>
+<tr class="ehD-pt-item ehD-pt-failed" data-index="1">
+    <td class="ehD-pt-name">#2: _9.jpg</td>
+    <td class="ehD-pt-progress-outer"> <progress class="ehD-pt-progress" value="0"></progress> <span
+            class="ehD-pt-progress-text"></span> </td>
+    <td class="ehD-pt-status" data-inited-abort="2"> <span class="ehD-pt-status-text">Failed! (Network
+            Error)</span> <span class="ehD-pt-abort">Force Abort</span> </td>
+</tr>
+<tr class="ehD-pt-item ehD-pt-failed" data-index="2">
+    <td class="ehD-pt-name">#3: _3.jpg</td>
+    <td class="ehD-pt-progress-outer"> <progress class="ehD-pt-progress" value="0"></progress> <span
+            class="ehD-pt-progress-text"></span> </td>
+    <td class="ehD-pt-status" data-inited-abort="2"> <span class="ehD-pt-status-text">Failed! (Network
+            Error)</span> <span class="ehD-pt-abort">Force Abort</span> </td>
+</tr>
+<tr class="ehD-pt-item ehD-pt-failed" data-index="3">
+    <td class="ehD-pt-name">#4: _7.jpg</td>
+    <td class="ehD-pt-progress-outer"> <progress class="ehD-pt-progress" value="0"></progress> <span
+            class="ehD-pt-progress-text"></span> </td>
+    <td class="ehD-pt-status" data-inited-abort="2"> <span class="ehD-pt-status-text">Failed! (Network
+            Error)</span> <span class="ehD-pt-abort">Force Abort</span> </td>
+</tr>
+<tr class="ehD-pt-item ehD-pt-failed" data-index="4">
+    <td class="ehD-pt-name">#5: _8.jpg</td>
+    <td class="ehD-pt-progress-outer"> <progress class="ehD-pt-progress" value="0"></progress> <span
+            class="ehD-pt-progress-text"></span> </td>
+    <td class="ehD-pt-status" data-inited-abort="2"> <span class="ehD-pt-status-text">Failed! (Network
+            Error)</span> <span class="ehD-pt-abort">Force Abort</span> </td>
+</tr>
+<tr class="ehD-pt-item ehD-pt-failed" data-index="5">
+    <td class="ehD-pt-name">#6</td>
+    <td class="ehD-pt-progress-outer"> <progress class="ehD-pt-progress" value="0"></progress> <span
+            class="ehD-pt-progress-text"></span> </td>
+    <td class="ehD-pt-status" data-inited-abort="1"> <span class="ehD-pt-status-text">Failed getting URL</span>
+        <span class="ehD-pt-abort">Force Abort</span> </td>
+</tr>
+<tr class="ehD-pt-item ehD-pt-failed" data-index="6">
+    <td class="ehD-pt-name">#7</td>
+    <td class="ehD-pt-progress-outer"> <progress class="ehD-pt-progress" value="0"></progress> <span
+            class="ehD-pt-progress-text"></span> </td>
+    <td class="ehD-pt-status" data-inited-abort="1"> <span class="ehD-pt-status-text">Failed getting URL</span>
+        <span class="ehD-pt-abort">Force Abort</span> </td>
+</tr>
+<tr class="ehD-pt-item ehD-pt-failed" data-index="7">
+    <td class="ehD-pt-name">#8</td>
+    <td class="ehD-pt-progress-outer"> <progress class="ehD-pt-progress" value="0"></progress> <span
+            class="ehD-pt-progress-text"></span> </td>
+    <td class="ehD-pt-status" data-inited-abort="1"> <span class="ehD-pt-status-text">Failed getting URL</span>
+        <span class="ehD-pt-abort">Force Abort</span> </td>
+</tr>
+<tr class="ehD-pt-item ehD-pt-failed" data-index="8">
+    <td class="ehD-pt-name">#9</td>
+    <td class="ehD-pt-progress-outer"> <progress class="ehD-pt-progress" value="0"></progress> <span
+            class="ehD-pt-progress-text"></span> </td>
+    <td class="ehD-pt-status" data-inited-abort="1"> <span class="ehD-pt-status-text">Failed getting URL</span>
+        <span class="ehD-pt-abort">Force Abort</span> </td>
+</tr>
+<tr class="ehD-pt-item ehD-pt-failed" data-index="9">
+    <td class="ehD-pt-name">#10</td>
+    <td class="ehD-pt-progress-outer"> <progress class="ehD-pt-progress" value="0"></progress> <span
+            class="ehD-pt-progress-text"></span> </td>
+    <td class="ehD-pt-status" data-inited-abort="1"> <span class="ehD-pt-status-text">Failed getting URL</span>
+        <span class="ehD-pt-abort">Force Abort</span> </td>
+</tr>
+<tr class="ehD-pt-item ehD-pt-failed" data-index="10">
+    <td class="ehD-pt-name">#11</td>
+    <td class="ehD-pt-progress-outer"> <progress class="ehD-pt-progress" value="0"></progress> <span
+            class="ehD-pt-progress-text"></span> </td>
+    <td class="ehD-pt-status" data-inited-abort="1"> <span class="ehD-pt-status-text">Failed getting URL</span>
+        <span class="ehD-pt-abort">Force Abort</span> </td>
+</tr>
+<tr class="ehD-pt-item ehD-pt-warning" data-index="11">
+    <td class="ehD-pt-name">#12</td>
+    <td class="ehD-pt-progress-outer"> <progress class="ehD-pt-progress" value="0"></progress> <span
+            class="ehD-pt-progress-text"></span> </td>
+    <td class="ehD-pt-status" data-inited-abort="1"> <span class="ehD-pt-status-text">Retrying (2/3)...</span>
+        <span class="ehD-pt-abort">Force Abort</span> </td>
+</tr>
+<tr class="ehD-pt-item ehD-pt-warning" data-index="12">
+    <td class="ehD-pt-name">#13</td>
+    <td class="ehD-pt-progress-outer"> <progress class="ehD-pt-progress" value="0"></progress> <span
+            class="ehD-pt-progress-text"></span> </td>
+    <td class="ehD-pt-status" data-inited-abort="1"> <span class="ehD-pt-status-text">Retrying (1/3)...</span>
+        <span class="ehD-pt-abort">Force Abort</span> </td>
+</tr>
+<tr class="ehD-pt-item ehD-pt-warning" data-index="13">
+    <td class="ehD-pt-name">#14</td>
+    <td class="ehD-pt-progress-outer"> <progress class="ehD-pt-progress" value="0"></progress> <span
+            class="ehD-pt-progress-text"></span> </td>
+    <td class="ehD-pt-status" data-inited-abort="1"> <span class="ehD-pt-status-text">Retrying (1/3)...</span>
+        <span class="ehD-pt-abort">Force Abort</span> </td>
+</tr>
+<tr class="ehD-pt-item ehD-pt-warning" data-index="14">
+    <td class="ehD-pt-name">#15</td>
+    <td class="ehD-pt-progress-outer"> <progress class="ehD-pt-progress" value="0"></progress> <span
+            class="ehD-pt-progress-text"></span> </td>
+    <td class="ehD-pt-status" data-inited-abort="1"> <span class="ehD-pt-status-text">Retrying (1/3)...</span>
+        <span class="ehD-pt-abort">Force Abort</span> </td>
+</tr>
+<tr class="ehD-pt-item ehD-pt-warning" data-index="15">
+    <td class="ehD-pt-name">#16</td>
+    <td class="ehD-pt-progress-outer"> <progress class="ehD-pt-progress" value="0"></progress> <span
+            class="ehD-pt-progress-text"></span> </td>
+    <td class="ehD-pt-status" data-inited-abort="1"> <span class="ehD-pt-status-text">Retrying (1/3)...</span>
+        <span class="ehD-pt-abort">Force Abort</span> </td>
+</tr>
+</table>
+<div class="ehD-force-download-tips">If an error occured and script doesn't work, click <a
+    href="javascript: getzip();" style="font-weight: bold; pointer-events: auto;"
+    title="Force download won't stop current downloading task.">here</a> to force get your downloaded images.
+</div><button class="ehD-pause">Pause (Downloading images will keep downloading)</button>
+</div>`;
+document.body.appendChild(htmlNode);
+console.log("Add 1");
 
 var downFiles = [],
     yandere = false,
