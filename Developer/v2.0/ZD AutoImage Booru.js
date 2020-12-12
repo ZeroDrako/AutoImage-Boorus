@@ -25,7 +25,219 @@
 // ==/UserScript==
 /* globals $, saveAs, toastr */
 
-GM_addStyle(GM_getResourceText("BootstrapCSS"));
+var ehDownloadStyle = '\
+	@-webkit-keyframes progress { \
+		from { -webkit-transform: translateX(-50%) scaleX(0); transform: translateX(-50%) scaleX(0); } \
+		60% { -webkit-transform: translateX(15%) scaleX(0.7); transform: translateX(15%) scaleX(0.7); } \
+		to { -webkit-transform: translateX(50%) scaleX(0); transform: translateX(50%) scaleX(0); } \
+	} \
+	@-moz-keyframes progress { \
+		from { -moz-transform: translateX(-50%) scaleX(0); transform: translateX(-50%) scaleX(0); } \
+		60% { -moz-transform: translateX(15%) scaleX(0.7); transform: translateX(15%) scaleX(0.7); } \
+		to { -moz-transform: translateX(50%) scaleX(0); transform: translateX(50%) scaleX(0); } \
+	} \
+	@-ms-keyframes progress { \
+		from { -ms-transform: translateX(-50%) scaleX(0); transform: translateX(-50%) scaleX(0); } \
+		60% { -ms-transform: translateX(15%) scaleX(0.7); transform: translateX(15%) scaleX(0.7); } \
+		to { -ms-transform: translateX(50%) scaleX(0); transform: translateX(50%) scaleX(0); } \
+	} \
+	@keyframes progress { \
+		from { -webkit-transform: translateX(-50%) scaleX(0); transform: translateX(-50%) scaleX(0); } \
+		60% { -webkit-transform: translateX(15%) scaleX(0.7); transform: translateX(15%) scaleX(0.7); } \
+		to { -webkit-transform: translateX(50%) scaleX(0); transform: translateX(50%) scaleX(0); } \
+	} \
+	.ehD-box { margin: 20px auto; width: 732px; box-sizing: border-box; font-size: 12px; border: 1px groove #000000; }\
+	.ehD-box a { cursor: pointer; }\
+	.ehD-box .g2 { display: inline-block; margin: 10px; padding: 0; line-height: 14px; }\
+	.ehD-box legend { font-weight: 700; padding: 0 10px; } \
+	.ehD-box legend a { color: inherit; text-decoration: none; }\
+	.ehD-box input[type="text"] { width: 250px; }\
+	.ehD-box-extend input[type="text"] { width: 255px; }\
+	.ehD-box input::placeholder { color: #999999; -webkit-text-fill-color: #999999; }\
+	.ehD-setting { position: fixed; left: 0; right: 0; top: 0; bottom: 0; padding: 5px; border: 1px solid #000000; background: #34353b; color: #dddddd; width: 600px; height: 380px; max-width: 100%; max-height: 100%; overflow-x: hidden; overflow-y: auto; box-sizing: border-box; margin: auto; z-index: 999; text-align: left; font-size: 12px; outline: 5px rgba(0, 0, 0, 0.25) solid; }\
+	.ehD-setting-tab { list-style: none; margin: 5px 0; padding: 0 10px; border-bottom: 1px solid #cccccc; overflow: auto; }\
+	.ehD-setting-tab li { float: left; padding: 5px 10px; border-bottom: 0; cursor: pointer; }\
+	.ehD-setting[data-active-setting="basic"] li[data-target-setting="basic"], .ehD-setting[data-active-setting="advanced"] li[data-target-setting="advanced"] { font-weight: bold; background: #cccccc; color: #000000; }\
+	.ehD-setting-main { overflow: hidden }\
+	.ehD-setting-wrapper { width: 200%; overflow: hidden; -webkit-transform: translateX(0%); -moz-transform: translateX(0%); -o-transform: translateX(0%); -ms-transform: translateX(0%); transform: translateX(0%); -webkit-transition: all 0.5s cubic-bezier(0.86, 0, 0.07, 1); -moz-transition: all 0.5s cubic-bezier(0.86, 0, 0.07, 1); -o-transition: all 0.5s cubic-bezier(0.86, 0, 0.07, 1); -ms-transition: all 0.5s cubic-bezier(0.86, 0, 0.07, 1); transition: all 0.5s cubic-bezier(0.86, 0, 0.07, 1); }\
+	.ehD-setting[data-active-setting="advanced"] .ehD-setting-wrapper { -webkit-transform: translateX(-50%); -moz-transform: translateX(-50%); -o-transform: translateX(-50%); -ms-transform: translateX(-50%); transform: translateX(-50%); }\
+	.ehD-setting-content { width: 50%; float: left; box-sizing: border-box; padding: 5px 10px; height: 295px; max-height: calc(100vh - 85px); overflow: auto; }\
+	.ehD-setting .g2 { padding-bottom: 10px; }\
+	.ehD-setting input, .ehD-box input, .ehD-setting select, .ehD-box select { vertical-align: middle; top: 0; margin: 0; }\
+	.ehD-setting input[type="text"], .ehD-box input[type="text"], .ehD-setting input[type="number"] { height: 18px; padding: 0 0 0 3px; line-height: 18px; border-radius: 3px; }\
+	.ehD-setting input[type="text"], .ehD-setting input[type="number"] { border: 1px solid #8d8d8d; } \
+	.ehD-setting input[type="checkbox"] { margin: 3px 3px 4px 0 } \
+	.ehD-setting select { padding: 0 3px 1px; } \
+	.ehD-setting-note { border: 1px dashed #999999; padding: 10px 10px 0 10px; }\
+	.ehD-setting-footer { text-align: center; margin-top: 5px; border-top: 1px solid #cccccc; padding-top: 5px; }\
+	.ehD-setting sup { vertical-align: top; }\
+	.ehD-setting a { color: #ffffff; }\
+	.ehD-box input[type="number"] { height: 17px; }\
+	.ehD-dialog progress { height: 12px; -webkit-appearance: none; border: 1px solid #4f535b; color: #4f535b; background: #34353b; position: relative; } \
+	.ehD-dialog progress::-webkit-progress-bar { background: #34353b; } \
+	.ehD-dialog progress::-webkit-progress-value { background: #4f535b; -webkit-transition: all 0.2s ease; transition: all 0.2s ease; } \
+	.ehD-dialog progress::-moz-progress-bar { background: #4f535b; -moz-transition: all 0.2s ease; transition: all 0.2s ease; } \
+	.ehD-dialog progress::-ms-fill { background: #4f535b; -ms-transition: all 0.2s ease; transition: all 0.2s ease; } \
+	.ehD-dialog progress:not([value])::after { content: ""; will-change: transform; width: 100%; height: 100%; left: 0; top: 0; display: block; background: #4f535b; position: absolute; -webkit-animation: progress 1s linear infinite; -moz-animation: progress 1s linear infinite; -ms-animation: progress 1s linear infinite; animation: progress 1s linear infinite; } \
+	.ehD-dialog progress:not([value])::-moz-progress-bar { width: 0px !important; } \
+	.ehD-pt { table-layout: fixed; width: 100%; }\
+	.ehD-pt-name { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }\
+	.ehD-pt-progress-outer { width: 160px; position: relative; }\
+	.ehD-pt-progress { width: 150px; }\
+	.ehD-pt-progress-text { position: absolute; width: 100%; text-align: center; color: #b8b8b8; left: 0; right: 0; }\
+	.ehD-pt-status { width: 130px; }\
+	.ehD-pt-succeed .ehD-pt-status { color: #00ff00; }\
+	.ehD-pt-warning .ehD-pt-status { color: #ffff00; }\
+	.ehD-pt-failed .ehD-pt-status { color: #ff0000; }\
+	.ehD-pt-abort { color: #ffff00; display: none; cursor: pointer; }\
+	.ehD-pt-status[data-inited-abort]:hover .ehD-pt-abort, .ehD-pt-failed .ehD-pt-status[data-inited-abort]:hover .ehD-pt-status-text, .ehD-pt-succeed .ehD-pt-status[data-inited-abort]:hover .ehD-pt-status-text { display: inline; }\
+	.ehD-pt-status[data-inited-abort]:hover .ehD-pt-status-text, .ehD-pt-failed .ehD-pt-status[data-inited-abort]:hover .ehD-pt-abort, .ehD-pt-succeed .ehD-pt-status[data-inited-abort]:hover .ehD-pt-abort { display: none; }\
+	.ehD-pt-gen-progress { width: 50%; }\
+	.ehD-pt-gen-filename { margin-bottom: 1em; }\
+	.ehD-dialog { position: fixed; right: 0; bottom: 0; display: none; padding: 5px; border: 1px solid #000000; background: #34353b; color: #dddddd; width: 550px; height: 300px; overflow: auto; z-index: 999; word-break: break-all; }\
+	.ehD-status { position: fixed; right: 0; bottom: 311px; width: 550px; padding: 5px; border: 1px solid #000000; background: #34353b; color: #dddddd; cursor: pointer; -webkit-user-select: none; -moz-user-select: none; -o-user-select: none; -ms-user-select: none; user-select: none; }\
+	.ehD-dialog, .ehD-status { -webkit-transition: margin 0.5s ease; -moz-transition: margin 0.5s ease; -o-transition: margin 0.5s ease; -ms-transition: margin 0.5s ease; transition: margin 0.5s ease; }\
+	.ehD-dialog.hidden, .ehD-dialog.hidden .ehD-status { margin-bottom: -311px; }\
+	.ehD-dialog .ehD-force-download-tips { position: fixed; right: 0; bottom: 288px; border: 1px solid #000000; width: 550px; padding: 5px; background: rgba(0, 0, 0, 0.75); color: #ffffff; cursor: pointer; opacity: 0; pointer-events: none; -webkit-transition: opacity 0.5s ease, bottom 0.5s ease; -moz-transition: opacity 0.5s ease, bottom 0.5s ease; -o-transition: opacity 0.5s ease, bottom 0.5s ease; -ms-transition: opacity 0.5s ease, bottom 0.5s ease; transition: opacity 0.5s ease, bottom 0.5s ease; }\
+	.ehD-dialog:hover .ehD-force-download-tips { opacity: 1; }\
+	.ehD-dialog.hidden .ehD-force-download-tips { bottom: -24px; }\
+	.ehD-close-tips { position: fixed; left: 0; right: 0; bottom: 0; padding: 10px; border: 1px solid #000000; background: #34353b; color: #dddddd; width: 732px; max-width: 100%; max-height: 100%; overflow-x: hidden; overflow-y: auto; box-sizing: border-box; margin: auto; z-index: 1000; text-align: left; font-size: 14px; outline: 5px rgba(0, 0, 0, 0.25) solid; }\
+	.ehD-feedback { position: absolute; right: 5px; top: 14px; }\
+';
+
+
+var ehDownloadBox = document.createElement('fieldset');
+ehDownloadBox.className = 'ehD-box';
+var ehDownloadBoxTitle = document.createElement('legend');
+ehDownloadBoxTitle.innerHTML = 'E-Hentai Downloader <span class="ehD-box-limit"></span> <span class="ehD-box-cost"></span>';
+if (origin.indexOf('exhentai.org') >= 0) ehDownloadBoxTitle.style.color = '#ffff66';
+ehDownloadBox.appendChild(ehDownloadBoxTitle);
+var ehDownloadStylesheet = document.createElement('style');
+ehDownloadStylesheet.textContent = ehDownloadStyle;
+ehDownloadBox.appendChild(ehDownloadStylesheet);
+
+var ehDownloadArrow = '<img src="data:image/gif;base64,R0lGODlhBQAHALMAAK6vr7OztK+urra2tkJCQsDAwEZGRrKyskdHR0FBQUhISP///wAAAAAAAAAAAAAAACH5BAEAAAsALAAAAAAFAAcAAAQUUI1FlREVpbOUSkTgbZ0CUEhBLREAOw==">';
+
+var ehDownloadAction = document.createElement('div');
+ehDownloadAction.className = 'g2';
+ehDownloadAction.innerHTML = ehDownloadArrow + ' <a>Download Archive</a>';
+ehDownloadAction.addEventListener('click', function(event) {
+    event.preventDefault();
+
+    var torrentsNode = document.querySelector('#gd5 a[onclick*="gallerytorrents.php"]');
+    var torrentsCount = torrentsNode ? torrentsNode.textContent.match(/\d+/)[0] - 0 : 0;
+    if (isDownloading && !confirm('E-Hentai Downloader is working now, are you sure to stop downloading and start a new download?')) return;
+    else if (!setting['ignore-torrent'] && torrentsCount > 0 && !confirm('There are ' + torrentsCount + ' torrent(s) available for this gallery. You can download the torrent(s) to get a stable and controllable download experience without spending your image limits, or even get bonus content.\n\nContinue downloading with E-Hentai Downloader (Yes) or use torrent(s) directly (No)?\n(You can disable this notification in the Settings)')) {
+        return torrentsNode.dispatchEvent(new MouseEvent('click'));
+    }
+    if (unsafeWindow.apiuid === -1 && !confirm('You are not logged in to E-Hentai Forums, so you can\'t download original image. Continue?')) return;
+    ehDownloadDialog.innerHTML = '';
+
+    initEHDownload();
+});
+ehDownloadBox.appendChild(ehDownloadAction);
+
+var ehDownloadNumberInput = document.createElement('div');
+ehDownloadNumberInput.className = 'g2';
+ehDownloadNumberInput.innerHTML = ehDownloadArrow + ' <a><label><input type="checkbox" style="vertical-align: middle; margin: 0;"> Number Images</label></a>';
+ehDownloadBox.appendChild(ehDownloadNumberInput);
+
+var ehDownloadRange = document.createElement('div');
+ehDownloadRange.className = 'g2';
+ehDownloadRange.innerHTML = ehDownloadArrow + ' <a><label>Pages Range <input type="text" placeholder="eg. -10,12,14-20,27,30-40/2,50-60/3,70-"></label></a>';
+ehDownloadBox.appendChild(ehDownloadRange);
+
+var ehDownloadSetting = document.createElement('div');
+ehDownloadSetting.className = 'g2';
+ehDownloadSetting.innerHTML = ehDownloadArrow + ' <a>Settings</a>';
+ehDownloadSetting.addEventListener('click', function(event) {
+    event.preventDefault();
+    showSettings();
+});
+ehDownloadBox.appendChild(ehDownloadSetting);
+
+document.body.insertBefore(ehDownloadBox, document.getElementById('asm') || document.querySelector('.gm').nextElementSibling);
+
+var ehDownloadDialog = document.createElement('div');
+ehDownloadDialog.className = 'ehD-dialog';
+document.body.appendChild(ehDownloadDialog);
+
+var ehDownloadStatus = document.createElement('div');
+ehDownloadStatus.className = 'ehD-status';
+ehDownloadStatus.addEventListener('click', function(event) {
+    event.preventDefault();
+    ehDownloadDialog.classList.toggle('hidden');
+});
+
+var ehDownloadPauseBtn = document.createElement('button');
+ehDownloadPauseBtn.className = 'ehD-pause';
+ehDownloadPauseBtn.textContent = 'Pause';
+ehDownloadPauseBtn.addEventListener('click', function(event) {
+    if (!isPausing) {
+        isPausing = true;
+        ehDownloadPauseBtn.textContent = 'Resume';
+
+        if (setting['force-pause']) {
+            // waiting Tampermonkey for transfering string to ArrayBuffer, it may stuck for a second 
+            setTimeout(function() {
+                for (var i = 0; i < fetchThread.length; i++) {
+                    if (typeof fetchThread[i] !== 'undefined' && 'abort' in fetchThread[i]) fetchThread[i].abort();
+
+                    if (imageData[i] === 'Fetching' && retryCount[i] < (setting['retry-count'] !== undefined ? setting['retry-count'] : 3)) {
+                        var elem = progressTable.querySelector('tr[data-index="' + i + '"] .ehD-pt-status-text');
+                        if (elem) elem.textContent = 'Force Paused';
+
+                        elem = progressTable.querySelector('tr[data-index="' + i + '"] .ehD-pt-progress-text');
+                        if (elem) elem.textContent = '';
+
+                        imageData[i] = null;
+                        //fetchCount = 0; // fixed for async
+                        fetchCount--;
+
+                        updateTotalStatus();
+                    }
+                }
+            }, 0);
+        }
+
+        if (emptyAudio) {
+            emptyAudio.pause();
+        }
+    } else {
+        isPausing = false;
+        ehDownloadPauseBtn.textContent = setting['force-pause'] ? 'Pause (Downloading images will be aborted)' : 'Pause (Downloading images will keep downloading)';
+
+        checkFailed();
+    }
+});
+
+window.addEventListener('focus', function() {
+    if (setting['status-in-title'] === 'blur') {
+        if (!needTitleStatus) return;
+        document.title = pretitle;
+        needTitleStatus = false;
+    }
+});
+
+window.addEventListener('blur', function() {
+    if (isDownloading && setting['status-in-title'] === 'blur') {
+        needTitleStatus = true;
+        document.title = '[' + (isPausing ? '❙❙' : downloadedCount < totalCount ? '↓ ' + downloadedCount + '/' + totalCount : totalCount === 0 ? '↓' : '√') + '] ' + pretitle;
+    }
+});
+
+var forceDownloadTips = document.createElement('div');
+forceDownloadTips.className = 'ehD-force-download-tips';
+forceDownloadTips.innerHTML = 'If an error occured and script doesn\'t work, click <a href="javascript: getzip();" style="font-weight: bold; pointer-events: auto;" title="Force download won\'t stop current downloading task.">here</a> to force get your downloaded images.';
+forceDownloadTips.getElementsByTagName('a')[0].addEventListener('click', function(event) {
+    // fixed permission denied on GreaseMonkey
+    event.preventDefault();
+    saveDownloaded(true);
+});
+
+var closeTips = document.createElement('div');
+closeTips.className = 'ehD-close-tips';
+closeTips.innerHTML = 'E-Hentai Downloader is still running, please don\'t close this tab until it finished downloading.<br><br>If any bug occured and the script doesn\'t work correctly, you can move your mouse pointer onto the progress box, and force to save downloaded images before you leave.';
 
 var downFiles = [],
     yandere = false,
